@@ -6,13 +6,22 @@
     android:layout_height="match_parent"
     tools:context=".view.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+    <com.denzcoskun.imageslider.ImageSlider
+        android:id="@+id/imageSliderShow"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_150sdp"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:iss_auto_cycle="true"
+        app:iss_corner_radius="20"
+        app:iss_period="1500"
+        app:iss_selected_dot="@drawable/iss_selected_dot"
+        app:iss_unselected_dot="@drawable/iss_unselected_dot" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

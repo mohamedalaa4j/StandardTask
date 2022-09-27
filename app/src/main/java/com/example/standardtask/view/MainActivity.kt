@@ -1,18 +1,16 @@
 package com.example.standardtask.view
 
-import android.annotation.SuppressLint
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.example.standardtask.R
+import com.denzcoskun.imageslider.constants.ScaleTypes
+import com.denzcoskun.imageslider.models.SlideModel
 import com.example.standardtask.databinding.ActivityMainBinding
-import com.example.standardtask.model.MainSliderImagesModel
+import com.example.standardtask.model.models.MainSliderImagesModel
 import com.example.standardtask.utilities.ScreenState
+import com.example.standardtask.utilities.Utilities
 import com.example.standardtask.viewModel.MainActivityVM
-import com.google.android.material.snackbar.Snackbar
-import java.security.SecureRandom
-import java.security.cert.X509Certificate
-import javax.net.ssl.*
 
 class MainActivity : AppCompatActivity() {
     private var binding : ActivityMainBinding? = null
@@ -21,18 +19,19 @@ class MainActivity : AppCompatActivity() {
         ViewModelProvider(this)[MainActivityVM::class.java]
     }
 
+    private val imageList = ArrayList<SlideModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(R.layout.activity_main)
+        setContentView(binding?.root)
 
-        handleSSLHandshake()
+        viewModel.getBannerImages()
 
-        viewModel.getSliderImages()
-
-        viewModel.postMutableLiveData.observe(this) {
-            processApiResponse(it)
+        viewModel.bannerImagesResponse.observe(this) {
+            setupBannerImagesSlider(it)
         }
+
 
 
     }//onCreate/////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -41,50 +40,30 @@ class MainActivity : AppCompatActivity() {
         binding = null
     }
 
-    private fun processApiResponse(screenState: ScreenState<MainSliderImagesModel>){
+    private fun setupBannerImagesSlider(screenState: ScreenState<MainSliderImagesModel>){
         when(screenState){
-            is ScreenState.Loading -> {
-               // showProgressDialog()
-              //  Snackbar.make(binding?.root!!, "screenState.message", Snackbar.LENGTH_SHORT).show()
 
+            is ScreenState.Loading -> {
+                Utilities.showProgressDialog(this)
             }
+
             is ScreenState.Success ->{
                 if (screenState.data != null) {
-                    Snackbar.make(binding?.root!!, "success", Snackbar.LENGTH_SHORT).show()
-                }
-              //  cancelProgressDialog()
-            }
-            is ScreenState.Error ->{
-               // cancelProgressDialog()
-                Snackbar.make(binding?.root!!, screenState.message!!, Snackbar.LENGTH_SHORT).show()
-            }
-        }
-    }
+                   val response =  screenState.data[0].adsSpacesprice
 
-    // Fix handleSSLHandshake exception
-    @SuppressLint("TrulyRandom")
-    fun handleSSLHandshake() {
-        try {
-            val trustAllCerts: Array<TrustManager> =
-                arrayOf<TrustManager>(object : X509TrustManager {
-                    val acceptedIssuers: Array<Any?>?
-                        get() = arrayOfNulls(0)
-
-                    override fun checkClientTrusted(certs: Array<X509Certificate?>?, authType: String?) {}
-                    override fun checkServerTrusted(certs: Array<X509Certificate?>?, authType: String?) {}
-                    override fun getAcceptedIssuers(): Array<X509Certificate> {
-                        TODO("Not yet implemented")
+                    for (i in response){
+                        imageList.add(SlideModel("https://satatechnologygroup.net:3301/" + i.sliders.photo ))
                     }
-                })
-            val sc: SSLContext = SSLContext.getInstance("SSL")
-            sc.init(null, trustAllCerts, SecureRandom())
-            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory())
-            HttpsURLConnection.setDefaultHostnameVerifier(object : HostnameVerifier {
-                override fun verify(arg0: String?, arg1: SSLSession?): Boolean {
-                    return true
+
+                    binding?.imageSliderShow?.setImageList(imageList, ScaleTypes.FIT)
                 }
-            })
-        } catch (ignored: Exception) {
+              Utilities.cancelProgressDialog()
+            }
+
+            is ScreenState.Error ->{
+                Toast.makeText(this,screenState.message,Toast.LENGTH_SHORT).show()
+                Utilities.cancelProgressDialog()
+            }
         }
     }
 
