@@ -1,4 +1,4 @@
-package com.example.standardtask.model.models
+package com.example.standardtask.model.models.received
 
 
 import com.google.gson.annotations.SerializedName
