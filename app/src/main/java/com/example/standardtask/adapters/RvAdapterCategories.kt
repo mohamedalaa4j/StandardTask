@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.standardtask.databinding.RvItemCategoriesBinding
-import com.example.standardtask.model.models.received.CategoriesModel
+import com.example.standardtask.data.models.received.CategoriesModel
 
 class RvAdapterCategories(
     private val items: CategoriesModel, private val listenerId: (id: String) -> Unit,

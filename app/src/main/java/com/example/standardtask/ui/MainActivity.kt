@@ -1,7 +1,6 @@
-package com.example.standardtask.view
+package com.example.standardtask.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -9,21 +8,22 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
 import com.example.standardtask.adapters.RvAdapterCategories
+import com.example.standardtask.data.models.received.CategoriesModel
+import com.example.standardtask.data.models.received.MainSliderImagesModel
 import com.example.standardtask.databinding.ActivityMainBinding
-import com.example.standardtask.model.models.received.CategoriesModel
-import com.example.standardtask.model.models.received.MainSliderImagesModel
+import com.example.standardtask.utilities.Constants
 import com.example.standardtask.utilities.ScreenState
 import com.example.standardtask.utilities.Utilities
 import com.example.standardtask.viewModel.MainActivityVM
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private var binding: ActivityMainBinding? = null
 
     private val viewModel: MainActivityVM by lazy {
         ViewModelProvider(this)[MainActivityVM::class.java]
     }
-
-    private val imageList = ArrayList<SlideModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,11 +61,8 @@ class MainActivity : AppCompatActivity() {
                 if (screenState.data != null) {
                     val response = screenState.data[0].adsSpacesprice
 
-                    for (i in response) {
-                        imageList.add(SlideModel("https://satatechnologygroup.net:3301/" + i.sliders.photo))
-                    }
+                    initializeBannerImagesSlider(response)
 
-                    binding?.imageSliderShow?.setImageList(imageList, ScaleTypes.FIT)
                 }
                 Utilities.cancelProgressDialog()
 
@@ -91,7 +88,7 @@ class MainActivity : AppCompatActivity() {
                 if (screenState.data != null) {
                     val response = screenState.data
 
-                    setupRV(response)
+                    initializeCategoriesRV(response)
                 }
                 Utilities.cancelProgressDialog()
 
@@ -101,18 +98,30 @@ class MainActivity : AppCompatActivity() {
 
             is ScreenState.Error -> {
                 Toast.makeText(this, screenState.message, Toast.LENGTH_SHORT).show()
-                Log.e("error", "null")
                 Utilities.cancelProgressDialog()
             }
         }
     }
 
-    private fun setupRV(data: CategoriesModel) {
+    private fun initializeCategoriesRV(data: CategoriesModel) {
         binding?.rvType?.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
         // adapter
-        val adapter = RvAdapterCategories(data){}
+        val adapter = RvAdapterCategories(data) {}
         binding?.rvType?.adapter = adapter
+
+
+    }
+
+    private fun initializeBannerImagesSlider(response: List<MainSliderImagesModel.MainSliderImagesModelItem.AdsSpacesprice>) {
+
+        val imageList = ArrayList<SlideModel>()
+
+        for (i in response) {
+            imageList.add(SlideModel(Constants.IMAGES_BASE_URL + i.sliders.photo))
+        }
+
+        binding?.imageSliderShow?.setImageList(imageList, ScaleTypes.FIT)
 
 
     }

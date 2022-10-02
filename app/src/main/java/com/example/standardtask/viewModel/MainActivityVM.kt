@@ -1,44 +1,46 @@
 package com.example.standardtask.viewModel
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.standardtask.model.Repository
-import com.example.standardtask.model.models.received.CategoriesModel
-import com.example.standardtask.model.models.send.BodySent
-import com.example.standardtask.model.models.received.MainSliderImagesModel
-import com.example.standardtask.network.RetrofitObject
+import com.example.standardtask.data.Repository
+import com.example.standardtask.data.models.received.CategoriesModel
+import com.example.standardtask.data.models.received.MainSliderImagesModel
+import com.example.standardtask.data.models.send.BodySent
+import com.example.standardtask.utilities.Constants
 import com.example.standardtask.utilities.ScreenState
+import com.example.standardtask.utilities.Utilities
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MainActivityVM : ViewModel() {
+@HiltViewModel
+class MainActivityVM @Inject constructor(private val repository: Repository) : ViewModel() {
 
     val bannerImagesResponse = MutableLiveData<ScreenState<MainSliderImagesModel>>()
     val categoriesResponse = MutableLiveData<ScreenState<CategoriesModel>>()
-    private val repository = Repository(RetrofitObject.retrofit)
 
     fun getBannerImages() {
 
         bannerImagesResponse.postValue(ScreenState.Loading(null))
 
-            viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
 
-                try {
+            try {
 
-                    bannerImagesResponse.postValue(
-                        ScreenState.Success(
-                            repository.getBannerImages(
-                                "en",
-                                BodySent("ChIJ88rv8bI_WBQRkvVBLDeZQUg")
-                            ).body()!!
-                        )
+                bannerImagesResponse.postValue(
+                    ScreenState.Success(
+                        repository.getBannerImages(
+                            Utilities.deviceLanguage(),
+                            BodySent(Constants.GOOGLE_ID)
+                        ).body()!!
                     )
-                }catch (e: Exception) {
-                    bannerImagesResponse.postValue(ScreenState.Error(e.message.toString(), null))
-                }
+                )
+            } catch (e: Exception) {
+                bannerImagesResponse.postValue(ScreenState.Error(e.message.toString(), null))
             }
+        }
 
     }
 
@@ -52,13 +54,12 @@ class MainActivityVM : ViewModel() {
 
                 categoriesResponse.postValue(
                     ScreenState.Success(
-                        repository.geCategories("en").body()!!
+                        repository.geCategories(Utilities.deviceLanguage()).body()!!
                     )
                 )
 
 
-
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 categoriesResponse.postValue(ScreenState.Error(e.message.toString(), null))
 
             }
