@@ -14,24 +14,48 @@
         android:layout_marginTop="@dimen/_10sdp"
         android:layout_marginEnd="@dimen/_20sdp"
         android:layout_marginBottom="@dimen/_10sdp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:iss_auto_cycle="true"
         app:iss_corner_radius="20"
         app:iss_period="1500"
         app:iss_selected_dot="@drawable/iss_selected_dot"
-        app:iss_unselected_dot="@drawable/iss_unselected_dot" />
+        app:iss_unselected_dot="@drawable/iss_unselected_dot"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvType"
+        android:id="@+id/rvCategories"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imageSliderShow"
-        />
+        app:layout_constraintTop_toBottomOf="@id/imageSliderShow" />
+
+    <TextView
+        android:id="@+id/tvBestSellingRestaurants"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:text="@string/best_selling_restaurants"
+        android:fontFamily="@font/cairo_regular"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_14sdp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/rvBestSellingRestaurants"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rvCategories" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvBestSellingRestaurants"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvBestSellingRestaurants" />
 
     <Button
         android:id="@+id/btn"
@@ -39,7 +63,6 @@
         android:layout_height="wrap_content"
         android:text="click"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

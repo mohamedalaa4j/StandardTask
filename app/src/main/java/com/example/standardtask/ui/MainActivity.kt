@@ -1,14 +1,18 @@
 package com.example.standardtask.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
+import com.example.standardtask.adapters.RvAdapterBestSellingRestaurants
 import com.example.standardtask.adapters.RvAdapterCategories
 import com.example.standardtask.data.models.received.CategoriesModel
+import com.example.standardtask.data.models.received.HomePageComponantsModel
 import com.example.standardtask.data.models.received.MainSliderImagesModel
 import com.example.standardtask.databinding.ActivityMainBinding
 import com.example.standardtask.utilities.Constants
@@ -16,6 +20,8 @@ import com.example.standardtask.utilities.ScreenState
 import com.example.standardtask.utilities.Utilities
 import com.example.standardtask.viewModel.MainActivityVM
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -30,16 +36,37 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
-        binding?.btn?.setOnClickListener {
+        lifecycleScope.launch {
             viewModel.getBannerImages()
         }
 
-        viewModel.bannerImagesResponse.observe(this) {
-            setupBannerImagesSlider(it)
+        binding?.btn?.setOnClickListener {
+            lifecycleScope.launch {
+                viewModel.getBannerImages()
+            }
+
         }
 
-        viewModel.categoriesResponse.observe(this) {
-            setupCategoriesRV(it)
+        lifecycleScope.launchWhenStarted {
+            viewModel.bannerImagesStateFlow.collect {
+                setupBannerImagesSlider(it)
+
+            }
+        }
+
+
+        lifecycleScope.launchWhenStarted {
+            viewModel.categoriesStateFlow.collect {
+                setupCategoriesRV(it)
+
+            }
+        }
+
+
+        lifecycleScope.launchWhenStarted {
+            viewModel.homePageComponentsStateFlow.collect {
+                setupBestSellingRestaurantsRV(it)
+            }
         }
 
 
@@ -50,8 +77,12 @@ class MainActivity : AppCompatActivity() {
         binding = null
     }
 
+
     private fun setupBannerImagesSlider(screenState: ScreenState<MainSliderImagesModel>) {
         when (screenState) {
+
+            is ScreenState.InitialValue -> {
+            }
 
             is ScreenState.Loading -> {
                 Utilities.showProgressDialog(this)
@@ -66,13 +97,17 @@ class MainActivity : AppCompatActivity() {
                 }
                 Utilities.cancelProgressDialog()
 
-                viewModel.geCategories()
+                lifecycleScope.launch(Dispatchers.IO) {
+                    viewModel.geCategories()
+                }
+
 
             }
 
             is ScreenState.Error -> {
                 Toast.makeText(this, screenState.message, Toast.LENGTH_SHORT).show()
                 Utilities.cancelProgressDialog()
+
             }
         }
     }
@@ -80,8 +115,12 @@ class MainActivity : AppCompatActivity() {
     private fun setupCategoriesRV(screenState: ScreenState<CategoriesModel>) {
         when (screenState) {
 
+            is ScreenState.InitialValue -> {
+            }
+
             is ScreenState.Loading -> {
                 Utilities.showProgressDialog(this)
+
             }
 
             is ScreenState.Success -> {
@@ -90,8 +129,12 @@ class MainActivity : AppCompatActivity() {
 
                     initializeCategoriesRV(response)
                 }
+
                 Utilities.cancelProgressDialog()
 
+                lifecycleScope.launch(Dispatchers.IO) {
+                    viewModel.geHomePageComponents()
+                }
 
             }
 
@@ -103,14 +146,36 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun initializeCategoriesRV(data: CategoriesModel) {
-        binding?.rvType?.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+    private fun setupBestSellingRestaurantsRV(screenState: ScreenState<HomePageComponantsModel>) {
+        when (screenState) {
 
-        // adapter
-        val adapter = RvAdapterCategories(data) {}
-        binding?.rvType?.adapter = adapter
+            is ScreenState.InitialValue -> {
+            }
+
+            is ScreenState.Loading -> {
+                Utilities.showProgressDialog(this)
+            }
+
+            is ScreenState.Success -> {
+                if (screenState.data != null) {
+                    val response = screenState.data.getMostOrderedBranch?.data!!
+
+                    initializeBestSellingRestaurantsRV(response)
+
+                }
+                Log.e("cancelProgressDialog", "cancelProgressDialog")
+                Utilities.cancelProgressDialog()
 
 
+            }
+
+
+            is ScreenState.Error -> {
+                Toast.makeText(this, screenState.message, Toast.LENGTH_SHORT).show()
+                Utilities.cancelProgressDialog()
+
+            }
+        }
     }
 
     private fun initializeBannerImagesSlider(response: List<MainSliderImagesModel.MainSliderImagesModelItem.AdsSpacesprice>) {
@@ -125,5 +190,27 @@ class MainActivity : AppCompatActivity() {
 
 
     }
+
+    private fun initializeCategoriesRV(data: CategoriesModel) {
+        binding?.rvCategories?.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+
+        // adapter
+        val adapter = RvAdapterCategories(data) {}
+        binding?.rvCategories?.adapter = adapter
+
+
+    }
+
+    private fun initializeBestSellingRestaurantsRV(data: List<HomePageComponantsModel.GetMostOrderedBranch.Data?>) {
+        binding?.rvBestSellingRestaurants?.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+
+        // adapter
+        val adapter = RvAdapterBestSellingRestaurants(data) {}
+        binding?.rvBestSellingRestaurants?.adapter = adapter
+
+
+    }
+
 
 }

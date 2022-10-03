@@ -1,10 +1,12 @@
 package com.example.standardtask.di
 
+import android.content.Context
 import com.example.standardtask.network.RetrofitInterface
 import com.example.standardtask.network.RetrofitObject
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -17,6 +19,13 @@ object AppModule {
     @Provides
     fun providesRetrofit(): RetrofitInterface {
         return RetrofitObject.retrofit
+    }
+
+    // Retrofit Module
+    @Singleton
+    @Provides
+    fun provideContext(@ApplicationContext context: Context): Context {
+        return context
     }
 
 }

@@ -7,5 +7,6 @@ object Constants {
 
      // EndPoints
      const val MAIN_SLIDERS_ENDPOINT = "MobileMainPage/GetMainSliders/"
-     const val CATEGORIES_ENDPOINT = "Categories/index"
+     const val CATEGORIES_ENDPOINT = "Categories/index/"
+     const val HOME_PAGE_COMPONENTS_ENDPOINT = "MobileMainPage/GetHomePage/"
 }
