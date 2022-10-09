@@ -14,53 +14,58 @@ import com.example.standardtask.utilities.Utilities
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityVM @Inject constructor(private val repository: Repository) : ViewModel() {
 
-//    val bannerImagesResponse = MutableLiveData<ScreenState<MainSliderImagesModel>>()
-    val bannerImagesStateFlow = MutableStateFlow<ScreenState<MainSliderImagesModel>>(ScreenState.InitialValue(null))
+    private val _bannerImagesStateFlow =
+        MutableStateFlow<ScreenState<MainSliderImagesModel>>(ScreenState.InitialValue(null))
+    val bannerImagesStateFlow: StateFlow<ScreenState<MainSliderImagesModel>> = _bannerImagesStateFlow
 
-//    val categoriesResponse = MutableLiveData<ScreenState<CategoriesModel>>()
-    val categoriesStateFlow = MutableStateFlow<ScreenState<CategoriesModel>>(ScreenState.InitialValue(null))
+    private val _categoriesStateFlow = MutableStateFlow<ScreenState<CategoriesModel>>(ScreenState.InitialValue(null))
+    val categoriesStateFlow: StateFlow<ScreenState<CategoriesModel>> = _categoriesStateFlow
 
-//    val homePageComponentsResponse = MutableLiveData<ScreenState<HomePageComponantsModel>>()
-    val homePageComponentsStateFlow = MutableStateFlow<ScreenState<HomePageComponantsModel>>(ScreenState.InitialValue(null))
+    private val _homePageComponentsStateFlow =
+        MutableStateFlow<ScreenState<HomePageComponantsModel>>(ScreenState.InitialValue(null))
+    val homePageComponentsStateFlow: StateFlow<ScreenState<HomePageComponantsModel>> = _homePageComponentsStateFlow
 
-    suspend fun getBannerImages() {
-
-        bannerImagesStateFlow.emit(ScreenState.Loading(null))
+    fun getBannerImages() {
 
         viewModelScope.launch(Dispatchers.IO) {
 
+            _bannerImagesStateFlow.emit(ScreenState.Loading(null))
+
             try {
 
-                bannerImagesStateFlow.emit(
-                    ScreenState.Success(
-                        repository.getBannerImages(
-                            Utilities.deviceLanguage(),
-                            BodySent(Constants.GOOGLE_ID)
-                        ).body()!!
+                    _bannerImagesStateFlow.emit(
+                        ScreenState.Success(
+                            repository.getBannerImages(
+                                Utilities.deviceLanguage(),
+                                BodySent(Constants.GOOGLE_ID)
+                            ).body()!!
+                        )
                     )
-                )
+
             } catch (e: Exception) {
-                bannerImagesStateFlow.emit(ScreenState.Error(e.message.toString(), null))
+                _bannerImagesStateFlow.emit(ScreenState.Error(e.message.toString(), null))
             }
         }
 
     }
 
-    suspend fun geCategories() {
-
-        categoriesStateFlow.emit(ScreenState.Loading(null))
+    fun geCategories() {
 
         viewModelScope.launch(Dispatchers.IO) {
 
+            _categoriesStateFlow.emit(ScreenState.Loading(null))
+
+
             try {
 
-                categoriesStateFlow.emit(
+                _categoriesStateFlow.emit(
                     ScreenState.Success(
                         repository.geCategories(Utilities.deviceLanguage()).body()!!
                     )
@@ -68,31 +73,32 @@ class MainActivityVM @Inject constructor(private val repository: Repository) : V
 
 
             } catch (e: Exception) {
-                categoriesStateFlow.emit(ScreenState.Error(e.message.toString(), null))
+                _categoriesStateFlow.emit(ScreenState.Error(e.message.toString(), null))
 
             }
         }
 
     }
 
-    suspend fun geHomePageComponents() {
-
-        homePageComponentsStateFlow.emit(ScreenState.Loading(null))
+    fun geHomePageComponents() {
 
         viewModelScope.launch(Dispatchers.IO) {
 
+            _homePageComponentsStateFlow.emit(ScreenState.Loading(null))
+
             try {
 
-                homePageComponentsStateFlow.emit(
+                _homePageComponentsStateFlow.emit(
                     ScreenState.Success(
-                        repository.getHomePageComponents(Utilities.deviceLanguage(),BodySent(Constants.GOOGLE_ID)).body()!!
+                        repository.getHomePageComponents(Utilities.deviceLanguage(), BodySent(Constants.GOOGLE_ID))
+                            .body()!!
                     )
                 )
 
 
             } catch (e: Exception) {
-                homePageComponentsStateFlow.emit(ScreenState.Error(e.message.toString(), null))
-                Log.e("error",e.message.toString())
+                _homePageComponentsStateFlow.emit(ScreenState.Error(e.message.toString(), null))
+                Log.e("error", e.message.toString())
             }
         }
 

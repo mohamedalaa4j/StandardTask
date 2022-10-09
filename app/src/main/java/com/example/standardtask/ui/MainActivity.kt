@@ -1,7 +1,6 @@
 package com.example.standardtask.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -11,6 +10,7 @@ import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
 import com.example.standardtask.adapters.RvAdapterBestSellingRestaurants
 import com.example.standardtask.adapters.RvAdapterCategories
+import com.example.standardtask.adapters.RvAdapterMostOrderedItems
 import com.example.standardtask.data.models.received.CategoriesModel
 import com.example.standardtask.data.models.received.HomePageComponantsModel
 import com.example.standardtask.data.models.received.MainSliderImagesModel
@@ -36,14 +36,10 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
-        lifecycleScope.launch {
-            viewModel.getBannerImages()
-        }
+        viewModel.getBannerImages()
 
         binding?.btn?.setOnClickListener {
-            lifecycleScope.launch {
-                viewModel.getBannerImages()
-            }
+            viewModel.getBannerImages()
 
         }
 
@@ -90,17 +86,22 @@ class MainActivity : AppCompatActivity() {
 
             is ScreenState.Success -> {
                 if (screenState.data != null) {
-                    val response = screenState.data[0].adsSpacesprice
+
+                    var adsPosition = -1
+                    for (i in 0 until screenState.data.size) {
+                        if (screenState.data[i].name == "الصفحة الرئيسية الجزء العلوي") {
+                            adsPosition = i
+                        }
+                    }
+
+                    val response = screenState.data[adsPosition].adsSpacesprice
 
                     initializeBannerImagesSlider(response)
 
                 }
                 Utilities.cancelProgressDialog()
 
-                lifecycleScope.launch(Dispatchers.IO) {
-                    viewModel.geCategories()
-                }
-
+                viewModel.geCategories()
 
             }
 
@@ -158,12 +159,13 @@ class MainActivity : AppCompatActivity() {
 
             is ScreenState.Success -> {
                 if (screenState.data != null) {
-                    val response = screenState.data.getMostOrderedBranch?.data!!
+                    val getMostOrderedBranch = screenState.data.getMostOrderedBranch?.data!!
+                    val mostSellItems = screenState.data.mostSellItems?.data!!
 
-                    initializeBestSellingRestaurantsRV(response)
+                    initializeBestSellingRestaurantsRV(getMostOrderedBranch)
+                    initializeMostOrderedItemsRV(mostSellItems)
 
                 }
-                Log.e("cancelProgressDialog", "cancelProgressDialog")
                 Utilities.cancelProgressDialog()
 
 
@@ -208,6 +210,16 @@ class MainActivity : AppCompatActivity() {
         // adapter
         val adapter = RvAdapterBestSellingRestaurants(data) {}
         binding?.rvBestSellingRestaurants?.adapter = adapter
+
+
+    }
+    private fun initializeMostOrderedItemsRV(data: List<HomePageComponantsModel.MostSellItems.Data?>) {
+        binding?.rvMostOrderedItems?.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+
+        // adapter
+        val adapter = RvAdapterMostOrderedItems(data) {}
+        binding?.rvMostOrderedItems?.adapter = adapter
 
 
     }

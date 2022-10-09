@@ -2,8 +2,10 @@ package com.example.standardtask.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.standardtask.R
 import com.example.standardtask.data.models.received.HomePageComponantsModel
 import com.example.standardtask.databinding.RvItemBestSellingRestaurantsBinding
 
@@ -17,9 +19,10 @@ class RvAdapterBestSellingRestaurants(
         RecyclerView.ViewHolder(binding.root) {
 
 
-        val imageView = binding.imageView
-        val textView = binding.textView
-
+        val ivCover = binding.ivCover
+        val ivLogo = binding.ivLogo
+        val tvName = binding.tvName
+        val tvIsOpen = binding.tvIsOpen
 
     }
 
@@ -36,16 +39,28 @@ class RvAdapterBestSellingRestaurants(
         val context = holder.itemView.context
 
 
-        holder.textView.text = item?.name
+        holder.tvName.text = item?.name
 
-        val url = "https://satatechnologygroup.net:3301/${item?.cover}"
-        Glide.with(context).load(url).into(holder.imageView)
+        val urlCover = "https://satatechnologygroup.net:3301/${item?.cover}"
+        Glide.with(context).load(urlCover).error(R.drawable.no_image).into(holder.ivCover)
+
+        val urlLogo = "https://satatechnologygroup.net:3301/${item?.logo}"
+        Glide.with(context).load(urlLogo).error(R.drawable.no_image).into(holder.ivLogo)
+
+
+        if (item?.isOpen == "true"){
+            holder.tvIsOpen.text = context.getString(R.string.open)
+            holder.tvIsOpen.setTextColor(ContextCompat.getColor(context, R.color.green))
+        }else if (item?.isOpen == "false"){
+            holder.tvIsOpen.text = context.getString(R.string.closed)
+            holder.tvIsOpen.setTextColor(ContextCompat.getColor(context, R.color.red))
+        }
+
+
 
         holder.itemView.setOnClickListener {
             listenerId(item?.name.toString())
         }
-
-
     }
 
 

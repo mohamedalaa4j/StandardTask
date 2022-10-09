@@ -2,4 +2,8 @@
     <string name="app_name" translatable="false">Standard Task</string>
     <string name="please_wait">Please wait..</string>
     <string name="best_selling_restaurants">Best selling restaurants</string>
+    <string name="most_ordered_items">Most ordered items</string>
+    <string name="what_would_you_like_to_order">What would you like to order? Which section</string>
+    <string name="closed">(Closed)</string>
+    <string name="open">(Open)</string>
 </resources>

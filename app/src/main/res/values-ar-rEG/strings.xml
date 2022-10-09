@@ -3,4 +3,8 @@
     <string name="app_name">Standard Task</string>
     <string name="best_selling_restaurants">المطاعم الأكثر مبيعا</string>
     <string name="please_wait">أنتظر من فضلك</string>
+    <string name="closed">(مغلق)</string>
+    <string name="open">(مفتوح)</string>
+    <string name="most_ordered_items">الأطباق الأكثر مبيعا لدينا</string>
+    <string name="what_would_you_like_to_order">حابب تطلب ايه؟ اختر قسمك المفضل</string>
 </resources>

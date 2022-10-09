@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.standardtask.R
 import com.example.standardtask.databinding.RvItemCategoriesBinding
 import com.example.standardtask.data.models.received.CategoriesModel
 
@@ -40,7 +41,7 @@ class RvAdapterCategories(
         holder.textView.text = item.name
 
         val url = "https://satatechnologygroup.net:3301/${item.photo}"
-        Glide.with(context).load(url).into(holder.imageView)
+        Glide.with(context).load(url).error(R.drawable.no_image).into(holder.imageView)
 
         holder.itemView.setOnClickListener {
             listenerId(item.id.toString())
