@@ -5,10 +5,11 @@
       <map>
         <entry key="app/src/main/res/drawable/iss_selected_dot.xml" value="0.138" />
         <entry key="app/src/main/res/drawable/iss_unselected_dot.xml" value="0.138" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.2964338781575037" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.289760348583878" />
         <entry key="app/src/main/res/layout/progress_dialog.xml" value="0.25" />
         <entry key="app/src/main/res/layout/rv_item_best_selling_restaurants.xml" value="0.5" />
         <entry key="app/src/main/res/layout/rv_item_categories.xml" value="0.2078125" />
+        <entry key="app/src/main/res/layout/rv_item_latest_offers.xml" value="0.33" />
         <entry key="app/src/main/res/layout/rv_item_most_ordered_items.xml" value="0.5" />
         <entry key="app/src/main/res/xml/network_security_config.xml" value="0.20677083333333332" />
       </map>

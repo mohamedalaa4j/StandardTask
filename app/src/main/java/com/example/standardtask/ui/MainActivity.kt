@@ -8,6 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
+import com.example.standardtask.adapters.RvAdapterLatestOffers
 import com.example.standardtask.adapters.RvAdapterBestSellingRestaurants
 import com.example.standardtask.adapters.RvAdapterCategories
 import com.example.standardtask.adapters.RvAdapterMostOrderedItems
@@ -20,8 +21,6 @@ import com.example.standardtask.utilities.ScreenState
 import com.example.standardtask.utilities.Utilities
 import com.example.standardtask.viewModel.MainActivityVM
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -45,23 +44,21 @@ class MainActivity : AppCompatActivity() {
 
         lifecycleScope.launchWhenStarted {
             viewModel.bannerImagesStateFlow.collect {
-                setupBannerImagesSlider(it)
+                bannerImagesStateFlow(it)
 
             }
         }
-
 
         lifecycleScope.launchWhenStarted {
             viewModel.categoriesStateFlow.collect {
-                setupCategoriesRV(it)
+                categoriesStateFlow(it)
 
             }
         }
 
-
         lifecycleScope.launchWhenStarted {
             viewModel.homePageComponentsStateFlow.collect {
-                setupBestSellingRestaurantsRV(it)
+                homePageComponentsStateFlow(it)
             }
         }
 
@@ -73,8 +70,7 @@ class MainActivity : AppCompatActivity() {
         binding = null
     }
 
-
-    private fun setupBannerImagesSlider(screenState: ScreenState<MainSliderImagesModel>) {
+    private fun bannerImagesStateFlow(screenState: ScreenState<MainSliderImagesModel>) {
         when (screenState) {
 
             is ScreenState.InitialValue -> {
@@ -87,16 +83,31 @@ class MainActivity : AppCompatActivity() {
             is ScreenState.Success -> {
                 if (screenState.data != null) {
 
-                    var adsPosition = -1
+                    var adsPositionTop = -1
+                    var adsPositionMiddle = -1
+                    var adsPositionBottom = -1
                     for (i in 0 until screenState.data.size) {
                         if (screenState.data[i].name == "الصفحة الرئيسية الجزء العلوي") {
-                            adsPosition = i
+                            adsPositionTop = i
                         }
+
+                        if (screenState.data[i].name == "الصفحة الرئيسية الجزء الوسط") {
+                            adsPositionMiddle = i
+                        }
+
+                        if (screenState.data[i].name == "الصفحة الرئيسية الجزء السفلي") {
+                            adsPositionBottom = i
+                        }
+
                     }
 
-                    val response = screenState.data[adsPosition].adsSpacesprice
+                    val topAds = screenState.data[adsPositionTop].adsSpacesprice
+                    val middleAds = screenState.data[adsPositionMiddle].adsSpacesprice
+                    val bottomAds = screenState.data[adsPositionBottom].adsSpacesprice
 
-                    initializeBannerImagesSlider(response)
+                    initializeBannerImagesSliderTop(topAds)
+                    initializeBannerImagesSliderMiddle(middleAds)
+                    initializeBannerImagesSliderBottom(bottomAds)
 
                 }
                 Utilities.cancelProgressDialog()
@@ -113,7 +124,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupCategoriesRV(screenState: ScreenState<CategoriesModel>) {
+    private fun categoriesStateFlow(screenState: ScreenState<CategoriesModel>) {
         when (screenState) {
 
             is ScreenState.InitialValue -> {
@@ -133,9 +144,7 @@ class MainActivity : AppCompatActivity() {
 
                 Utilities.cancelProgressDialog()
 
-                lifecycleScope.launch(Dispatchers.IO) {
                     viewModel.geHomePageComponents()
-                }
 
             }
 
@@ -147,7 +156,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupBestSellingRestaurantsRV(screenState: ScreenState<HomePageComponantsModel>) {
+    private fun homePageComponentsStateFlow(screenState: ScreenState<HomePageComponantsModel>) {
         when (screenState) {
 
             is ScreenState.InitialValue -> {
@@ -161,10 +170,11 @@ class MainActivity : AppCompatActivity() {
                 if (screenState.data != null) {
                     val getMostOrderedBranch = screenState.data.getMostOrderedBranch?.data!!
                     val mostSellItems = screenState.data.mostSellItems?.data!!
+                    val latestOffers = screenState.data.lastoffers?.data!!
 
                     initializeBestSellingRestaurantsRV(getMostOrderedBranch)
                     initializeMostOrderedItemsRV(mostSellItems)
-
+                    initializeLatestOffersRV(latestOffers)
                 }
                 Utilities.cancelProgressDialog()
 
@@ -180,7 +190,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun initializeBannerImagesSlider(response: List<MainSliderImagesModel.MainSliderImagesModelItem.AdsSpacesprice>) {
+    private fun initializeBannerImagesSliderTop(response: List<MainSliderImagesModel.MainSliderImagesModelItem.AdsSpacesprice>) {
 
         val imageList = ArrayList<SlideModel>()
 
@@ -189,6 +199,32 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding?.imageSliderShow?.setImageList(imageList, ScaleTypes.FIT)
+
+
+    }
+
+    private fun initializeBannerImagesSliderMiddle(response: List<MainSliderImagesModel.MainSliderImagesModelItem.AdsSpacesprice>) {
+
+        val imageList = ArrayList<SlideModel>()
+
+        for (i in response) {
+            imageList.add(SlideModel(Constants.IMAGES_BASE_URL + i.sliders.photo))
+        }
+
+        binding?.imageSliderShowMiddle?.setImageList(imageList, ScaleTypes.FIT)
+
+
+    }
+
+    private fun initializeBannerImagesSliderBottom(response: List<MainSliderImagesModel.MainSliderImagesModelItem.AdsSpacesprice>) {
+
+        val imageList = ArrayList<SlideModel>()
+
+        for (i in response) {
+            imageList.add(SlideModel(Constants.IMAGES_BASE_URL + i.sliders.photo))
+        }
+
+        binding?.imageSliderShowBottom?.setImageList(imageList, ScaleTypes.FIT)
 
 
     }
@@ -213,6 +249,7 @@ class MainActivity : AppCompatActivity() {
 
 
     }
+
     private fun initializeMostOrderedItemsRV(data: List<HomePageComponantsModel.MostSellItems.Data?>) {
         binding?.rvMostOrderedItems?.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
@@ -220,6 +257,17 @@ class MainActivity : AppCompatActivity() {
         // adapter
         val adapter = RvAdapterMostOrderedItems(data) {}
         binding?.rvMostOrderedItems?.adapter = adapter
+
+
+    }
+
+    private fun initializeLatestOffersRV(data: List<HomePageComponantsModel.Lastoffers.Data?>) {
+        binding?.rvLatestOffers?.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+
+        // adapter
+        val adapter = RvAdapterLatestOffers(data) {}
+        binding?.rvLatestOffers?.adapter = adapter
 
 
     }

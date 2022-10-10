@@ -34,7 +34,7 @@ class MainActivityVM @Inject constructor(private val repository: Repository) : V
 
     fun getBannerImages() {
 
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch{
 
             _bannerImagesStateFlow.emit(ScreenState.Loading(null))
 
@@ -58,7 +58,7 @@ class MainActivityVM @Inject constructor(private val repository: Repository) : V
 
     fun geCategories() {
 
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch{
 
             _categoriesStateFlow.emit(ScreenState.Loading(null))
 
@@ -82,7 +82,7 @@ class MainActivityVM @Inject constructor(private val repository: Repository) : V
 
     fun geHomePageComponents() {
 
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch{
 
             _homePageComponentsStateFlow.emit(ScreenState.Loading(null))
 

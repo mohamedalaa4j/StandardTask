@@ -6,16 +6,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.standardtask.R
 import com.example.standardtask.data.models.received.HomePageComponantsModel
-import com.example.standardtask.databinding.RvItemMostOrderedItemsBinding
-import com.example.standardtask.utilities.Utilities
+import com.example.standardtask.databinding.RvItemLatestOffersBinding
 
-class RvAdapterMostOrderedItems(
-    private val items: List<HomePageComponantsModel.MostSellItems.Data?>, private val listenerId: (id: String) -> Unit,
-) : RecyclerView.Adapter<RvAdapterMostOrderedItems.ViewHolder>() {
+class RvAdapterLatestOffers(
+    private val items: List<HomePageComponantsModel.Lastoffers.Data?>, private val listenerId: (id: String) -> Unit,
+) : RecyclerView.Adapter<RvAdapterLatestOffers.ViewHolder>() {
 
 
     ///// ViewHolder class using ViewBinding instead of View
-    inner class ViewHolder(binding: RvItemMostOrderedItemsBinding) :
+    inner class ViewHolder(binding: RvItemLatestOffersBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         val ivCover = binding.ivCover
@@ -26,7 +25,7 @@ class RvAdapterMostOrderedItems(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            RvItemMostOrderedItemsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            RvItemLatestOffersBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
@@ -36,19 +35,12 @@ class RvAdapterMostOrderedItems(
 
         val context = holder.itemView.context
 
-            val urlCover = "https://satatechnologygroup.net:3301/${item?.menuCategoriesItems?.photo}"
+            val urlCover = "https://satatechnologygroup.net:3301/${item?.cover}"
             Glide.with(context).load(urlCover).error(R.drawable.no_image).into(holder.ivCover)
 
 
-        if (Utilities.deviceLanguage() == "ar"){
-            holder.tvDescription.text = item?.menuCategoriesItems?.descriptions
-            holder.tvName.text = item?.menuCategoriesItems?.name
-        }else if (Utilities.deviceLanguage() == "en"){
-            holder.tvDescription.text = item?.menuCategoriesItems?.descriptionsEn
+            holder.tvDescription.text = item?.description
             holder.tvName.text = item?.name
-        }
-
-
 
 
         holder.itemView.setOnClickListener {

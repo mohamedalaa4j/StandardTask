@@ -82,7 +82,7 @@
             android:layout_marginTop="@dimen/_25sdp"
             android:text="@string/most_ordered_items"
             android:textColor="@color/black"
-            android:textSize="@dimen/_14sdp"
+            android:textSize="@dimen/_14ssp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rvBestSellingRestaurants" />
@@ -97,14 +97,79 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvMostOrderedItems" />
 
+        <com.denzcoskun.imageslider.ImageSlider
+            android:id="@+id/imageSliderShowMiddle"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_150sdp"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
+            app:iss_auto_cycle="true"
+            app:iss_corner_radius="20"
+            app:iss_period="1500"
+            app:iss_selected_dot="@drawable/iss_selected_dot"
+            app:iss_unselected_dot="@drawable/iss_unselected_dot"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rvMostOrderedItems"
+            />
+
+        <TextView
+            android:id="@+id/tvLatestOffers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:text="@string/latest_offers"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_14ssp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imageSliderShowMiddle"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvLatestOffers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvLatestOffers"
+            />
+
+
+
+        <com.denzcoskun.imageslider.ImageSlider
+            android:id="@+id/imageSliderShowBottom"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_150sdp"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
+            app:iss_auto_cycle="true"
+            app:iss_corner_radius="20"
+            app:iss_period="1500"
+            app:iss_selected_dot="@drawable/iss_selected_dot"
+            app:iss_unselected_dot="@drawable/iss_unselected_dot"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rvLatestOffers"
+            />
+
+
         <Button
             android:id="@+id/btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_20sdp"
-            android:text="click"
+            android:visibility="invisible"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rvMostOrderedItems" />
+            app:layout_constraintTop_toBottomOf="@+id/imageSliderShowBottom" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -6,6 +6,7 @@ import com.example.standardtask.R
 import java.util.*
 
 object Utilities {
+
     private lateinit var progressbarDialog: Dialog
 
     fun showProgressDialog(context: Context) {

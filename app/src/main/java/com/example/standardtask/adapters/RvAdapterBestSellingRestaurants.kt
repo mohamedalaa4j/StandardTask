@@ -18,7 +18,6 @@ class RvAdapterBestSellingRestaurants(
     inner class ViewHolder(binding: RvItemBestSellingRestaurantsBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-
         val ivCover = binding.ivCover
         val ivLogo = binding.ivLogo
         val tvName = binding.tvName

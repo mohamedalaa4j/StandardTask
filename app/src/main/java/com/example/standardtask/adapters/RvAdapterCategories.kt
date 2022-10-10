@@ -17,10 +17,8 @@ class RvAdapterCategories(
     inner class ViewHolder(binding: RvItemCategoriesBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-
         val imageView = binding.imageView
         val textView = binding.textView
-
 
     }
 
@@ -37,17 +35,16 @@ class RvAdapterCategories(
         val context = holder.itemView.context
 
 
-
         holder.textView.text = item.name
 
         val url = "https://satatechnologygroup.net:3301/${item.photo}"
         Glide.with(context).load(url).error(R.drawable.no_image).into(holder.imageView)
 
+
+
         holder.itemView.setOnClickListener {
             listenerId(item.id.toString())
         }
-
-
 
     }
 
